@@ -1,0 +1,26 @@
+{
+    "C_Cpp.default.includePath": [
+        "src/app/inc",
+        "src/app/src",
+        "src/freertos_cfg/inc",
+        "src/epos/src",
+        "src/epos/inc",
+        "src/can_open/inc",
+        "src/can_open/src",
+        "ext/freertos_kernel/include",
+        "ext/freertos_kernel/portable/GCC/ARM_CM4F",
+        "Nucleo_F439ZI/Core/Inc",
+        "Nucleo_F439ZI/Drivers/STM32F4xx_HAL_Driver/Inc",
+        "Nucleo_F439ZI/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy",
+        "Nucleo_F439ZI/Drivers/CMSIS/Include",
+        "Nucleo_F439ZI/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
+    ],
+    "files.exclude": {
+    },
+    "C_Cpp.exclusionPolicy": "checkFilesAndFolders",
+    "C_Cpp.default.defines": [
+        "DEBUG",
+        "STM32F439xx",
+        "USE_HAL_DRIVER"
+    ]
+}
