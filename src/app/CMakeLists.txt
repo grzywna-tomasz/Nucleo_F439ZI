@@ -19,4 +19,6 @@ target_link_options(${PROJECT_NAME} PRIVATE --remove)
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
     stm32cubemx
+    freertos_kernel
+    freertos_config
 )

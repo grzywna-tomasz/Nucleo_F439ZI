@@ -11,8 +11,9 @@ project(${CMAKE_PROJECT_NAME} C ASM CXX)
 add_executable(${CMAKE_PROJECT_NAME})
 
 # This is used to trick cmake/stm32cubemx/CMakeLists.txt into knowing about the main_app lib without modifying Cube libs
-set(TOOLCHAIN_LINK_LIBRARIES main_app)
+set(TOOLCHAIN_LINK_LIBRARIES main_app freertos_kernel freertos_porting)
 
 add_subdirectory(src/app)
 add_subdirectory(Nucleo_F439ZI/cmake/stm32cubemx)
-
+add_subdirectory(src/freertos_cfg)
+add_subdirectory(ext/freertos_kernel)

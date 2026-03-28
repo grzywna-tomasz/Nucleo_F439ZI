@@ -1,13 +1,23 @@
 #include "app.h"
 #include "stm32f4xx_hal.h"
 #include <string.h>
+#include "FreeRTOS.h"
+#include "task.h"
+#include "main.h"
 
 extern ETH_HandleTypeDef heth;
-
 volatile uint8_t dummy_wait = 1;
 
-void App_main(void)
+#define ETH_STACK_SIZE (256)
+#define ETH_TASK_PRIORITY (tskIDLE_PRIORITY + 1)
+StackType_t EthStack[ETH_STACK_SIZE];
+StaticTask_t EthTaskBuffer;
+TaskHandle_t EthHandle = NULL;
+
+
+void EthTask(void *pvParameters)
 {
+    MX_ETH_Init();
     HAL_ETH_Start(&heth);
 
     while(1)
@@ -44,8 +54,35 @@ void App_main(void)
         TxConfig.ChecksumCtrl = ETH_CHECKSUM_IPHDR_PAYLOAD_INSERT_PHDR_CALC;
 
         HAL_ETH_Transmit(&heth, &TxConfig, HAL_MAX_DELAY);
-
-        while(dummy_wait);
-        dummy_wait = 1;
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
+
+#define LED_STACK_SIZE (256)
+#define LED_TASK_PRIORITY (tskIDLE_PRIORITY + 1)
+StackType_t LedStack[LED_STACK_SIZE];
+StaticTask_t LedTaskBuffer;
+TaskHandle_t LedHandle = NULL;
+
+void LedTask(void *pvParameters)
+{
+    while(1)
+    {
+        HAL_GPIO_TogglePin(GPIOB, LD1_Pin);
+        HAL_GPIO_TogglePin(GPIOB, LD2_Pin);
+        HAL_GPIO_TogglePin(GPIOB, LD3_Pin);
+        vTaskDelay(pdMS_TO_TICKS(500));
+    }
+}
+
+
+void App_main(void)
+{
+    EthHandle = xTaskCreateStatic(EthTask, "EthTask", ETH_STACK_SIZE, (void *) 0, ETH_TASK_PRIORITY, EthStack, &EthTaskBuffer);
+    LedHandle = xTaskCreateStatic(LedTask, "LedTask", LED_STACK_SIZE, (void *) 0, LED_TASK_PRIORITY, LedStack, &LedTaskBuffer);
+
+    vTaskStartScheduler();
+
+    while(1);
+}
+
