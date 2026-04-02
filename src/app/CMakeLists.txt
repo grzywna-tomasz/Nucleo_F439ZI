@@ -21,4 +21,6 @@ target_link_libraries(${PROJECT_NAME}
     stm32cubemx
     freertos_kernel
     freertos_config
+    lwip
+    std_libs
 )

@@ -636,7 +636,7 @@
 /* Set the following configUSE_* constants to 1 to include the named feature in
  * the build, or 0 to exclude the named feature from the build. */
 #define configUSE_TASK_NOTIFICATIONS           1
-#define configUSE_MUTEXES                      0
+#define configUSE_MUTEXES                      1
 #define configUSE_RECURSIVE_MUTEXES            0
 #define configUSE_COUNTING_SEMAPHORES          0
 #define configUSE_QUEUE_SETS                   0
@@ -655,7 +655,7 @@
 #define INCLUDE_vTaskSuspend                   0
 #define INCLUDE_xTaskDelayUntil                0
 #define INCLUDE_vTaskDelay                     1
-#define INCLUDE_xTaskGetSchedulerState         0
+#define INCLUDE_xTaskGetSchedulerState         1
 #define INCLUDE_xTaskGetCurrentTaskHandle      0
 #define INCLUDE_uxTaskGetStackHighWaterMark    0
 #define INCLUDE_xTaskGetIdleTaskHandle         0
