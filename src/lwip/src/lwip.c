@@ -16,15 +16,17 @@
 #include "lwip/netif.h"
 #include "ethernetif.h"
 #include "netif/ethernet.h"
+#include "lwip/sockets.h"
+#include "lwip/netdb.h"
 
-#define SERVER_IP_BYTE_1    (198U)
-#define SERVER_IP_BYTE_2    (19U)
-#define SERVER_IP_BYTE_3    (60U)
-#define SERVER_IP_BYTE_4    (101U)
+#define SERVER_IP_BYTE_1    (192U)
+#define SERVER_IP_BYTE_2    (168U)
+#define SERVER_IP_BYTE_3    (100U)
+#define SERVER_IP_BYTE_4    (10U)
 
 #define SERVER_MASK_BYTE_1    (255U)
 #define SERVER_MASK_BYTE_2    (255U)
-#define SERVER_MASK_BYTE_3    (252U)
+#define SERVER_MASK_BYTE_3    (255U)
 #define SERVER_MASK_BYTE_4    (0U)
 
 #define SERVER_GATEWAY_BYTE_1    (0U)
@@ -64,7 +66,7 @@ static void ethernet_link_status_updated(struct netif *netif)
     }
 }
 
-void Lwip_Task(void *pvParameters)
+void Lwip_UdpTask(void *pvParameters)
 {
     while(1)
     {
@@ -81,7 +83,8 @@ void Lwip_Task(void *pvParameters)
 
 void Lwip_Init(void)
 {
-    lwip_init();
+    /* This initializes TCP IP and call lwip_init which initialize the UDP part as well */
+    tcpip_init(NULL, NULL);
 
     /* IP addresses initialization without DHCP (IPv4) */
     IP4_ADDR(&Lwip_ServerIp, SERVER_IP_BYTE_1, SERVER_IP_BYTE_2, SERVER_IP_BYTE_3, SERVER_IP_BYTE_4);
@@ -130,4 +133,77 @@ err_t Lwip_SendUdp(uint8_t message[], uint16_t message_length)
     }
 
     return ERR_MEM;
+}
+
+#define TCP_PORT 5000
+#define RX_BUFFER_SIZE 512
+
+void Lwip_TcpIpTask(void *pvParameters)
+{
+    vTaskDelay(pdMS_TO_TICKS(2000));
+    /* Create File Descriptors (Unix naming for IDs) */
+    int server_fd, client_fd;
+    struct sockaddr_in server_addr, client_addr;
+    socklen_t client_len = sizeof(client_addr);
+    char rx_buffer[RX_BUFFER_SIZE];
+
+    /* Create socket */
+    server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (server_fd < 0)
+    {
+        while(1);
+    }
+
+    /* Bind */
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(TCP_PORT);
+    server_addr.sin_addr.s_addr = INADDR_ANY;
+
+    if (bind(server_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
+    {
+        close(server_fd);
+         while(1);
+    }
+
+    /* Listen */
+    if (listen(server_fd, 0) < 0)
+    {
+        close(server_fd);
+        while(1);
+    }
+
+    Lwip_SendUdp("TCP server listening\n", strlen("TCP server listening\n"));
+
+    while (1)
+    {
+        /* Accept client connection */
+        client_fd = accept(server_fd, (struct sockaddr *)&client_addr, &client_len);
+        if (client_fd < 0)
+        {
+            continue;
+        }
+
+        Lwip_SendUdp("Client connected", strlen("Client connected"));
+
+        while (1)
+        {
+            int len = recv(client_fd, rx_buffer, RX_BUFFER_SIZE - 1, 0);
+
+            if (len <= 0)
+            {
+                Lwip_SendUdp("Client disconnected", strlen("Client disconnected"));
+                break;
+            }
+
+            rx_buffer[len] = '\0';
+
+            Lwip_SendUdp(rx_buffer, len);
+
+            /* Echo back */
+            send(client_fd, rx_buffer, len, 0);
+        }
+
+        /* Close client */
+        close(client_fd);
+    }
 }

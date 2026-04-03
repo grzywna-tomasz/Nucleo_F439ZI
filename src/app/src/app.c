@@ -6,10 +6,11 @@
 #include "main.h"
 #include "std_types.h"
 #include "lwip.h"
+#include "lwip/tcpip.h"
 
-#define DESTINATION_IP_BYTE_1       (198U)
-#define DESTINATION_IP_BYTE_2       (19U)
-#define DESTINATION_IP_BYTE_3       (60U)
+#define DESTINATION_IP_BYTE_1       (192U)
+#define DESTINATION_IP_BYTE_2       (168U)
+#define DESTINATION_IP_BYTE_3       (100U)
 #define DESTINATION_IP_BYTE_4       (1U)
 #define DEST_PORT                   (1234U)
 
@@ -32,6 +33,12 @@ TaskHandle_t Led_Handle = NULL;
 StackType_t Lwip_Stack[LWIP_STACK_SIZE];
 StaticTask_t Lwip_TaskBuffer;
 TaskHandle_t Lwip_Handle = NULL;
+
+#define LWIP_TCP_STACK_SIZE (512)
+#define LWIP_TCP_TASK_PRIORITY (tskIDLE_PRIORITY + 1)
+StackType_t Lwip_TcpStack[LWIP_TCP_STACK_SIZE];
+StaticTask_t Lwip_TcpTaskBuffer;
+TaskHandle_t Lwip_TcpHandle = NULL;
 
 void EthTask(void *pvParameters)
 {
@@ -63,7 +70,7 @@ void LedTask(void *pvParameters)
         HAL_GPIO_TogglePin(GPIOB, LD1_Pin);
         HAL_GPIO_TogglePin(GPIOB, LD2_Pin);
         HAL_GPIO_TogglePin(GPIOB, LD3_Pin);
-        vTaskDelay(pdMS_TO_TICKS(1));
+        vTaskDelay(pdMS_TO_TICKS(500));
     }
 }
 
@@ -73,7 +80,8 @@ void App_main(void)
 
     Eth_Handle = xTaskCreateStatic(EthTask, "EthTask", ETH_STACK_SIZE, (void *) 0, ETH_TASK_PRIORITY, Eth_Stack, &Eth_TaskBuffer);
     Led_Handle = xTaskCreateStatic(LedTask, "LedTask", LED_STACK_SIZE, (void *) 0, LED_TASK_PRIORITY, Led_Stack, &Led_TaskBuffer);
-    Lwip_Handle = xTaskCreateStatic(Lwip_Task, "LwipTask", LWIP_STACK_SIZE, (void *) 0, LWIP_TASK_PRIORITY, Lwip_Stack, &Lwip_TaskBuffer);
+    Lwip_Handle = xTaskCreateStatic(Lwip_UdpTask, "LwipTask", LWIP_STACK_SIZE, (void *) 0, LWIP_TASK_PRIORITY, Lwip_Stack, &Lwip_TaskBuffer);
+    Lwip_TcpHandle = xTaskCreateStatic(Lwip_TcpIpTask, "LwipTcpTask", LWIP_TCP_STACK_SIZE, (void *) 0, LWIP_TCP_TASK_PRIORITY, Lwip_TcpStack, &Lwip_TcpTaskBuffer);
 
     vTaskStartScheduler();
 

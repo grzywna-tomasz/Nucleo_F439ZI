@@ -3,7 +3,7 @@
 #define NO_SYS                          0
 #define SYS_LIGHTWEIGHT_PROT            1
 #define LWIP_NETCONN                    1
-#define LWIP_SOCKET                     0
+#define LWIP_SOCKET                     1
 
 #define TCPIP_THREAD_NAME               "tcpip"
 #define TCPIP_THREAD_STACKSIZE          1024
