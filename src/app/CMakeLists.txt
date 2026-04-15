@@ -23,4 +23,5 @@ target_link_libraries(${PROJECT_NAME}
     freertos_config
     lwip
     std_libs
+    app_erpc_c
 )

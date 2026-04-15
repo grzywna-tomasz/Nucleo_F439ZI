@@ -34,4 +34,5 @@ target_link_libraries(lwipcore
     freertos_kernel
     freertos_config
     lwip
+    std_libs
 )

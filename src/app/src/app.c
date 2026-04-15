@@ -7,6 +7,7 @@
 #include "std_types.h"
 #include "lwip.h"
 #include "lwip/tcpip.h"
+#include "server.h"
 
 #define DESTINATION_IP_BYTE_1       (192U)
 #define DESTINATION_IP_BYTE_2       (168U)
@@ -34,10 +35,10 @@ StackType_t Lwip_Stack[LWIP_STACK_SIZE];
 StaticTask_t Lwip_TaskBuffer;
 TaskHandle_t Lwip_Handle = NULL;
 
-#define LWIP_TCP_STACK_SIZE (512)
-#define LWIP_TCP_TASK_PRIORITY (tskIDLE_PRIORITY + 1)
-StackType_t Lwip_TcpStack[LWIP_TCP_STACK_SIZE];
-StaticTask_t Lwip_TcpTaskBuffer;
+#define SERVER_STACK_SIZE (512)
+#define SERVER_TASK_PRIORITY (tskIDLE_PRIORITY + 1)
+StackType_t Server_Stack[SERVER_STACK_SIZE];
+StaticTask_t Server_TaskBuffer;
 TaskHandle_t Lwip_TcpHandle = NULL;
 
 void EthTask(void *pvParameters)
@@ -77,11 +78,12 @@ void LedTask(void *pvParameters)
 void App_main(void)
 {
     Lwip_Init();
+    Server_Init();
 
     Eth_Handle = xTaskCreateStatic(EthTask, "EthTask", ETH_STACK_SIZE, (void *) 0, ETH_TASK_PRIORITY, Eth_Stack, &Eth_TaskBuffer);
     Led_Handle = xTaskCreateStatic(LedTask, "LedTask", LED_STACK_SIZE, (void *) 0, LED_TASK_PRIORITY, Led_Stack, &Led_TaskBuffer);
     Lwip_Handle = xTaskCreateStatic(Lwip_UdpTask, "LwipTask", LWIP_STACK_SIZE, (void *) 0, LWIP_TASK_PRIORITY, Lwip_Stack, &Lwip_TaskBuffer);
-    Lwip_TcpHandle = xTaskCreateStatic(Lwip_TcpIpTask, "LwipTcpTask", LWIP_TCP_STACK_SIZE, (void *) 0, LWIP_TCP_TASK_PRIORITY, Lwip_TcpStack, &Lwip_TcpTaskBuffer);
+    // Lwip_TcpHandle = xTaskCreateStatic(Lwip_TcpIpTask, "LwipTcpTask", SERVER_STACK_SIZE, (void *) 0, SERVER_TASK_PRIORITY, Server_Stack, &Server_TaskBuffer);
 
     vTaskStartScheduler();
 
