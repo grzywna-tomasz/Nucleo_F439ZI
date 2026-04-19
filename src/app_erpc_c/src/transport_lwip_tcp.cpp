@@ -27,17 +27,6 @@ using namespace erpc;
 class TransportLwipTcp: public Transport
 {
 public:
-    TransportLwipTcp(uint16_t port)
-    {
-        m_listenPcb = tcp_new();
-        if ((m_listenPcb != nullptr) && (tcp_bind(m_listenPcb, IP_ADDR_ANY, port) == ERR_OK))
-        {
-            m_listenPcb = tcp_listen(m_listenPcb);
-            tcp_accept(m_listenPcb, acceptTcpCallbackStatic);
-            m_listenPcb->callback_arg = this;
-        }
-    }
-
     ~TransportLwipTcp()
     {
         if (m_clientPcb)
@@ -48,6 +37,17 @@ public:
         if (m_listenPcb)
         {
             tcp_close(m_listenPcb);
+        }
+    }
+
+    void init(uint16_t port)
+    {
+        m_listenPcb = tcp_new();
+        if ((m_listenPcb != nullptr) && (tcp_bind(m_listenPcb, IP_ADDR_ANY, port) == ERR_OK))
+        {
+            m_listenPcb = tcp_listen(m_listenPcb);
+            tcp_accept(m_listenPcb, acceptTcpCallbackStatic);
+            m_listenPcb->callback_arg = this;
         }
     }
 
@@ -243,13 +243,13 @@ private:
 
 };
 
-static TransportLwipTcp *TransportLwipTcp_Struct = nullptr;
+static TransportLwipTcp *TransportLwipTcp_Struct = new TransportLwipTcp();
 
 extern "C" {
 
 void * TransportLwipTcp_Init(uint16_t port, TaskHandle_t task_to_notify)
 { 
-    TransportLwipTcp_Struct = new TransportLwipTcp(port);
+    TransportLwipTcp_Struct->init(port);
     TransportLwipTcp_Struct->setTaskToNotify(task_to_notify);
 
     return static_cast<void *>(TransportLwipTcp_Struct);
