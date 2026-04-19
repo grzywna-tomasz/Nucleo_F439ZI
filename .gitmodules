@@ -3,3 +3,6 @@
 	url = https://github.com/FreeRTOS/FreeRTOS-Kernel.git
 [submodule "ext/erpc"]
 	path = ext/erpc
+[submodule "ext/det"]
+	path = ext/det
+	url = git@github.com:grzywna-tomasz/det.git

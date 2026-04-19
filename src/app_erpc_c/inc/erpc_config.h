@@ -23,7 +23,7 @@
 
 //! @name Threading model options
 //@{
-#define ERPC_ALLOCATION_POLICY_DYNAMIC (0U) //!< Dynamic allocation policy
+#define ERPC_ALLOCATION_POLICY_DYNAMIC (1U) //!< Dynamic allocation policy
 #define ERPC_ALLOCATION_POLICY_STATIC (1U)  //!< Static allocation policy
 
 #define ERPC_THREADS_NONE (0U)     //!< No threads.

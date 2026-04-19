@@ -24,4 +24,5 @@ target_link_libraries(${PROJECT_NAME}
     lwip
     std_libs
     app_erpc_c
+    det
 )

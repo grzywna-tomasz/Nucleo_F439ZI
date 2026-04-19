@@ -10,6 +10,7 @@ extern "C" {
 #include "transport_lwip_tcp.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "det.h"
 }
 
 static constexpr uint32_t ERPC_HEADER_SIZE = 6;
@@ -197,7 +198,7 @@ private:
         else if (kCompleteMessageCheck_CrcFailed == message_completion)
         {
             /* There is issue with CRC, drop the message to make room for new message */
-            /* TODOTODO add some logging of this event */
+            Det_Error(DET_TRANSPORT_LWIP_TCP_CRC_ERROR, DET_MULTIPLE_TIME_REPORT_ERROR);
             m_rxLen = 0;
         }
         else

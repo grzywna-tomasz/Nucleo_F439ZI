@@ -35,4 +35,6 @@ target_link_libraries(${PROJECT_NAME}
     freertos_kernel
     freertos_config
     std_libs
+    main_app
+    det
 )

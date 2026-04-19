@@ -8,6 +8,8 @@
 #include "lwip.h"
 #include "lwip/tcpip.h"
 #include "server.h"
+#include "det.h"
+#include "std_utils.h"
 
 #define DESTINATION_IP_BYTE_1       (192U)
 #define DESTINATION_IP_BYTE_2       (168U)
@@ -41,6 +43,7 @@ StackType_t Server_Stack[SERVER_STACK_SIZE];
 StaticTask_t Server_TaskBuffer;
 TaskHandle_t Lwip_TcpHandle = NULL;
 
+
 void EthTask(void *pvParameters)
 {
     /* Delay to let lwip perform initialization */
@@ -54,9 +57,13 @@ void EthTask(void *pvParameters)
     while(1)
     {
         char msg[] = "Hello from STM32";
-        if (ERR_OK != Lwip_SendUdp(msg, sizeof(msg)))
+        err_t result = Lwip_SendUdp(msg, sizeof(msg));
+        if (ERR_OK != result)
         {
-            while(1);
+            uint8_t error_data[sizeof(result) + APP_VERSION_SIZEOF];
+            StdUtils_Uint16ToBuffer(error_data, APP_VERSION);
+            *(error_data + APP_VERSION_SIZEOF) = result;
+            Det_WarningWithData(DET_UDP_SENDING_ERROR, DET_MULTIPLE_TIME_REPORT_ERROR, error_data, sizeof(error_data));
         }
 
         vTaskDelay(pdMS_TO_TICKS(1000));
