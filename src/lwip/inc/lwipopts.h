@@ -14,15 +14,15 @@
 #define LWIP_NETIF_HOSTNAME             1
 
 /* Size of TCP/IP thread message queue */
-#define TCPIP_MBOX_SIZE                 16
+#define TCPIP_MBOX_SIZE                 1
 /* Queue size for incomming TCP data per connection */
-#define DEFAULT_TCP_RECVMBOX_SIZE       8
+#define DEFAULT_TCP_RECVMBOX_SIZE       1
 /* Queue for pending incoming TCP connections */
-#define DEFAULT_TCP_ACCEPTMBOX_SIZE     8
+#define DEFAULT_TCP_ACCEPTMBOX_SIZE     1
 /* Queue for received UDP packets */
-#define DEFAULT_UDP_RECVMBOX_SIZE       8
-/* Queue for RAW API packets. TODOTODO try to set it to 0 */
-#define DEFAULT_RAW_RECVMBOX_SIZE       8
+#define DEFAULT_UDP_RECVMBOX_SIZE       0
+/* Queue for RAW API packets */
+#define DEFAULT_RAW_RECVMBOX_SIZE       0
 
 #define LWIP_TCP                        1
 #define LWIP_UDP                        1
@@ -35,13 +35,13 @@
 /* TTCP receive window (how much data you can receive before ACK) */
 #define TCP_WND                         (2 * TCP_MSS)
 #define LWIP_TCP_KEEPALIVE              1
-#define LWIP_RAW                        1
-/* Number of RAW API connections. TODOTODO try set it to 0 */
-#define MEMP_NUM_RAW_PCB                2
+#define LWIP_RAW                        0
+/* Number of RAW API connections */
+#define MEMP_NUM_RAW_PCB                0
 
 #define LWIP_ICMP                       1
 #define LWIP_ARP                        1
-/* Number of cached IP-MAC mappings. TODO - even through I am sending to one device, take into consideration Gateway, breadcast, other temporary trafic */
+/* Number of cached IP-MAC mappings. Even through I am sending to one device, take into consideration Gateway, breadcast, other temporary trafic */
 #define ARP_TABLE_SIZE                  4
 #define ARP_MAXAGE                      300
 /* Max packets queued while resolving address (resolving the address - sending ARP request and awaiting their response) */
@@ -72,21 +72,22 @@
 #define CHECKSUM_CHECK_ICMP             1
 
 #define MEM_ALIGNMENT                   4
-/* Heap size for LWIP TODO - try to decrement it */
-#define MEM_SIZE                        (8 * 1024)
-/* Number of pbuf structures (packet descriptors) TODOTODO check what it is */
-#define MEMP_NUM_PBUF                   16
+/* Heap size for LWIP */
+#define MEM_SIZE                        (2 * 1024)
+/* Number of pbuf structures (packet descriptors) */
+#define MEMP_NUM_PBUF                   2
 /* Number of active TCP connections 2 should be enough for 1 TCP connection (1 active and 1 TIME_WAIT/closing state) */
-#define MEMP_NUM_TCP_PCB                4
+#define MEMP_NUM_TCP_PCB                2
 /* Number of queued TCP segments */
 #define MEMP_NUM_TCP_SEG                8
 /* Number of simultaneous lwIP timers */
 #define MEMP_NUM_SYS_TIMEOUT            4
 
 /* Number of packet buffers */
-#define PBUF_POOL_SIZE                  16
+#define PBUF_POOL_SIZE                  2
 /* Size for each PBUF. 1520 fitt full eth frame */
 #define PBUF_POOL_BUFSIZE               1520
+/* Number of bytes in the link layer header. Default for ethrenet is 14 */
 #define PBUF_LINK_HLEN                  14
 
 #define LWIP_TIMERS                     1
@@ -104,7 +105,7 @@
 
 #define LWIP_NETIF_LINK_CALLBACK    1
 
-/* todotodo 
+/* todo 
 Create a mallock wrapper to catch all alocation failures
 monitor lwip_stats.pbuf.err lwip_stats.pbuf.drop for PBUF_POOL_SIZE too small
 monitor lwip_stats.etharp.memerr lwip_stats.etharp.drop for ARP_TABLE_SIZE too small and ARP_QUEUE_LEN too small

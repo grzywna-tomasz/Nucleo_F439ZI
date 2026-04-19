@@ -119,6 +119,7 @@ err_t Lwip_CreateUdpConnection(ip_addr_t ip_address, uint16_t port)
 err_t Lwip_SendUdp(uint8_t message[], uint16_t message_length)
 {
     struct pbuf *p;
+    err_t ret_val = ERR_MEM;
     if (message == NULL || message_length == 0)
     {
         return ERR_ARG;
@@ -129,10 +130,12 @@ err_t Lwip_SendUdp(uint8_t message[], uint16_t message_length)
     if (p != NULL)
     {
         memcpy(p->payload, message, message_length);
-        return udp_send(Lwip_UdpClient, p);
+        ret_val = udp_send(Lwip_UdpClient, p);
     }
 
-    return ERR_MEM;
+    pbuf_free(p);
+
+    return ret_val;
 }
 
 #define TCP_PORT 5000
