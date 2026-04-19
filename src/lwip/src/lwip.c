@@ -35,7 +35,6 @@
 #define SERVER_GATEWAY_BYTE_4    (0U)
 
 static void Ethernet_Link_Periodic_Handle(struct netif *netif);
-static void ethernet_link_status_updated(struct netif *netif);
 
 static struct udp_pcb *Lwip_UdpClient;
 static struct netif Lwip_NetIf;
@@ -51,18 +50,6 @@ static void Ethernet_Link_Periodic_Handle(struct netif *netif)
     {
         EthernetLinkTimer = HAL_GetTick();
         ethernet_link_check_state(netif);
-    }
-}
-
-static void ethernet_link_status_updated(struct netif *netif)
-{
-    if (netif_is_up(netif))
-    {
-        // TODOTODO logging here
-    }
-    else /* netif is down */
-    {
-        // TODOTODO logging here
     }
 }
 
@@ -99,9 +86,6 @@ void Lwip_Init(void)
 
     /* Bring up the netowork interface*/
     netif_set_up(&Lwip_NetIf);
-
-    /* Set the link callback function, this function is called on change of link status*/
-    netif_set_link_callback(&Lwip_NetIf, ethernet_link_status_updated);
 }
 
 err_t Lwip_CreateUdpConnection(ip_addr_t ip_address, uint16_t port)

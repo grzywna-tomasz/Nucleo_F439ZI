@@ -103,7 +103,7 @@
 #define TCP_DEBUG                       LWIP_DBG_OFF
 #define DHCP_DEBUG                      LWIP_DBG_OFF
 
-#define LWIP_NETIF_LINK_CALLBACK    1
+#define LWIP_NETIF_LINK_CALLBACK    0
 
 /* todo 
 Create a mallock wrapper to catch all alocation failures
