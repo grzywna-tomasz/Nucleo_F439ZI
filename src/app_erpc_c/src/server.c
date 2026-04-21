@@ -16,8 +16,8 @@
 
 #define SERVER_PORT (50000U)
 static void Server_Task(void *pvParameters);
-static void Errors_GetAllFreeMemoryIfMallocFailed(list_Erpc_ErrorInfo_t_1_t *error_list);
-static Std_ReturnType Errors_GetAllProcessAllErrors(list_Erpc_ErrorInfo_t_1_t *error_list);
+static void Errors_FreeMemoryIfMallocFailed(list_Erpc_ErrorInfo_t_1_t *out_errors);
+static Erpc_Status_t Errors_GetAdditionalDataForAllErrors(list_Erpc_ErrorInfo_t_1_t *out_errors);
 
 static StackType_t Server_Stack[SERVER_STACK_SIZE];
 static StaticTask_t Server_TaskBuffer;
@@ -61,37 +61,36 @@ uint16_t AppVersion_Get(void)
     return APP_VERSION;
 }
 
-list_Erpc_ErrorInfo_t_1_t * Errors_GetAll(void)
+Erpc_Status_t Errors_GetAll(list_Erpc_ErrorInfo_t_1_t * out_errors)
 {
-    Std_ReturnType operation_status = E_OK;
-    list_Erpc_ErrorInfo_t_1_t *error_list = (list_Erpc_ErrorInfo_t_1_t *)erpc_malloc(sizeof(list_Erpc_ErrorInfo_t_1_t));
-    if (error_list)
+    Erpc_Status_t operation_status = ERPC_OK;
+    if (out_errors)
     {
-        error_list->elementsCount = Det_GetErrorCount();
-        if (0 < error_list->elementsCount)
+        out_errors->elementsCount = Det_GetErrorCount();
+        if (0 < out_errors->elementsCount)
         {
-            error_list->elements = (Erpc_ErrorInfo_t *)erpc_malloc(error_list->elementsCount * sizeof(Erpc_ErrorInfo_t));
-            if (error_list->elements)
+            out_errors->elements = (Erpc_ErrorInfo_t *)erpc_malloc(out_errors->elementsCount * sizeof(Erpc_ErrorInfo_t));
+            if (out_errors->elements)
             {
-                Errors_GetAllProcessAllErrors(error_list);
+                Errors_GetAdditionalDataForAllErrors(out_errors);
             }
             else
             {
-                operation_status = E_NOT_OK;
+                operation_status = ERPC_NOT_OK;
             }
         }
     }
     else
     {
-        operation_status = E_NOT_OK;
+        operation_status = ERPC_NOT_OK;
     }
 
-    if (E_NOT_OK == operation_status)
+    if (ERPC_NOT_OK == operation_status)
     {
-        Errors_GetAllFreeMemoryIfMallocFailed(error_list);
+        Errors_FreeMemoryIfMallocFailed(out_errors);
     }
-    /* TODO check out why server is hanging if NULL is returned. Maybe add reinitialization of the server? */
-    return error_list;
+
+    return operation_status;
 }
 
 Erpc_Status_t Errors_ClearAll(void)
@@ -100,49 +99,46 @@ Erpc_Status_t Errors_ClearAll(void)
     return ERPC_OK;
 }
 
-static void Errors_GetAllFreeMemoryIfMallocFailed(list_Erpc_ErrorInfo_t_1_t *error_list)
+static void Errors_FreeMemoryIfMallocFailed(list_Erpc_ErrorInfo_t_1_t *out_errors)
 {
-    if (error_list)
+    if (out_errors)
     {
-        if (error_list->elements)
+        if (out_errors->elements)
         {
-            for (uint32_t i = 0; i < error_list->elementsCount; ++i)
+            for (uint32_t i = 0; i < out_errors->elementsCount; ++i)
             {
-                if (error_list->elements[i].additional_data.elements)
+                if (out_errors->elements[i].additional_data.elements)
                 {
-                    erpc_free(error_list->elements[i].additional_data.elements);
-                    error_list->elements[i].additional_data.elements = NULL;
+                    erpc_free(out_errors->elements[i].additional_data.elements);
                 }
             }
-            erpc_free(error_list->elements);
-            error_list->elements = NULL;
+            erpc_free(out_errors->elements);
         }
-        erpc_free(error_list);
-        error_list = NULL;
+        erpc_free(out_errors);
     }
     Det_Warning(DET_MALLOC_FAILED_ERPC_SERVER, DET_MULTIPLE_TIME_REPORT_ERROR);
 }
 
-static Std_ReturnType Errors_GetAllProcessAllErrors(list_Erpc_ErrorInfo_t_1_t *error_list)
+static Erpc_Status_t Errors_GetAdditionalDataForAllErrors(list_Erpc_ErrorInfo_t_1_t *out_errors)
 {
-    Std_ReturnType operation_status = E_OK;
-    for (uint32_t i = 0; i < error_list->elementsCount; ++i)
+    Erpc_Status_t operation_status = ERPC_OK;
+    for (uint32_t i = 0; i < out_errors->elementsCount; ++i)
     {
         uint8_t *additional_data_ptr;
         uint32_t additional_data_length;
-        error_list->elements[i].error_id = Det_GetErrorId(i);
+        out_errors->elements[i].error_id = Det_GetErrorId(i);
         additional_data_ptr = Det_GetErrorAdditionaldataPtr(i, &additional_data_length);
-        error_list->elements[i].additional_data.elementsCount = additional_data_length;
+        out_errors->elements[i].additional_data.elementsCount = additional_data_length;
         if (0 < additional_data_length)
         {
-            error_list->elements[i].additional_data.elements = (uint8_t *)erpc_malloc(additional_data_length * sizeof(uint8_t));
-            if (error_list->elements[i].additional_data.elements)
+            out_errors->elements[i].additional_data.elements = (uint8_t *)erpc_malloc(additional_data_length * sizeof(uint8_t));
+            if (out_errors->elements[i].additional_data.elements)
             {
-                memcpy(error_list->elements[i].additional_data.elements, additional_data_ptr, additional_data_length);
+                memcpy(out_errors->elements[i].additional_data.elements, additional_data_ptr, additional_data_length);
             }
             else
             {
-                operation_status = E_NOT_OK;
+                operation_status = ERPC_NOT_OK;
                 break;
             }
         }
