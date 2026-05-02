@@ -2,6 +2,7 @@ project(app_erpc_c)
 
 add_library(${PROJECT_NAME} STATIC
     src/server.c
+    src/memory.cpp
     src/transport_lwip_tcp.cpp
     ../erpc_generated/c_example_server.cpp
     ../erpc_generated/example_server.cpp

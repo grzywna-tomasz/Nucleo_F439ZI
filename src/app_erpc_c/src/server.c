@@ -145,3 +145,8 @@ static Erpc_Status_t Errors_GetAdditionalDataForAllErrors(list_Erpc_ErrorInfo_t_
     }
     return operation_status;
 }
+
+Erpc_SwVersion_t ErpcVersion_Get(void)
+{
+    return ERPC_INTERFACE_VERSION;
+}

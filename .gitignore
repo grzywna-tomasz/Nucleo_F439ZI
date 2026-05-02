@@ -56,3 +56,4 @@ dkms.conf
 
 build/
 tools/debugging/Debug.jdebug.user
+tools/elf_reader/venv/
