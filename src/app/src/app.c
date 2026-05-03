@@ -83,7 +83,7 @@ void LedTask(void *pvParameters)
 }
 
 void CanClassInit(void);
-
+void TestInit(void);
 void App_main(void)
 {
     Lwip_Init();
@@ -95,6 +95,7 @@ void App_main(void)
     // Lwip_TcpHandle = xTaskCreateStatic(Lwip_TcpIpTask, "LwipTcpTask", SERVER_STACK_SIZE, (void *) 0, SERVER_TASK_PRIORITY, Server_Stack, &Server_TaskBuffer);
 
     CanClassInit();
+    TestInit();
 
     vTaskStartScheduler();
 

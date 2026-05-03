@@ -18,3 +18,5 @@ target_link_libraries(${PROJECT_NAME}
     det
     stm32cubemx
 )
+
+target_compile_options(${PROJECT_NAME} PRIVATE ${OPTIMIZATION_DEBUG})

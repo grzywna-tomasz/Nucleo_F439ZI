@@ -6,6 +6,8 @@ set(MX_Defines_Syms
 	USE_HAL_DRIVER 
 	STM32F439xx
     $<$<CONFIG:Debug>:DEBUG>
+    USER_VECT_TAB_ADDRESS
+    VECT_TAB_SRAM
 )
 
 # STM32CubeMX generated include paths

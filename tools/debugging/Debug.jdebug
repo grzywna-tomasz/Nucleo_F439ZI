@@ -31,7 +31,7 @@ void OnProjectLoad (void) {
   // User settings
   //
   Project.SetOSPlugin ("FreeRTOSPlugin_Cortex-M");
-  File.Open ("../../build/Debug/nucleo.elf");
+  File.Open ("../../build/Release/nucleo.elf");
 }
 
 /*********************************************************************
