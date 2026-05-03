@@ -17,6 +17,7 @@
         "src/app_erpc_c/inc",
         "src/transport_lwip_tcp/inc",
         "src/det/inc",
+        "src/can/inc",
         "ext/freertos_kernel/include",
         "ext/freertos_kernel/portable/GCC/ARM_CM4F",
         "ext/lwip/src/include",

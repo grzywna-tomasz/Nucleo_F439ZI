@@ -23,5 +23,6 @@ add_subdirectory(src/lan8742_stm)
 add_subdirectory(src/ethernetif)
 add_subdirectory(src/app_erpc_c)
 add_subdirectory(src/det)
+add_subdirectory(src/can)
 
 add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_SOURCE_DIR}/tools/elf_reader/venv/bin/python ${CMAKE_SOURCE_DIR}/tools/elf_reader/elf_reader.py)

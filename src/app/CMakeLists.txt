@@ -25,4 +25,5 @@ target_link_libraries(${PROJECT_NAME}
     std_libs
     app_erpc_c
     det
+    can
 )
