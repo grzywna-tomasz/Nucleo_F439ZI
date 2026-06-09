@@ -42,10 +42,7 @@ static void Server_Task(void *pvParameters)
         status = erpc_server_poll(server);
         if (status != kErpcStatus_Success)
         {
-            uint8_t error_data[sizeof(status) + APP_VERSION_SIZEOF];
-            StdUtils_Uint16ToBuffer(error_data, APP_VERSION);
-            *(error_data + APP_VERSION_SIZEOF) = status;
-            Det_WarningWithData(DET_SERVER_FAILED_TO_POLL, DET_MULTIPLE_TIME_REPORT_ERROR, error_data, sizeof(error_data));
+            Det_WarningWithData(DET_SERVER_FAILED_TO_POLL, DET_MULTIPLE_TIME_REPORT_ERROR, (uint8_t *)(&status), sizeof(status));
         }
     }
 }

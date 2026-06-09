@@ -60,10 +60,7 @@ void EthTask(void *pvParameters)
         err_t result = Lwip_SendUdp(msg, sizeof(msg));
         if (ERR_OK != result)
         {
-            uint8_t error_data[sizeof(result) + APP_VERSION_SIZEOF];
-            StdUtils_Uint16ToBuffer(error_data, APP_VERSION);
-            *(error_data + APP_VERSION_SIZEOF) = result;
-            Det_WarningWithData(DET_UDP_SENDING_ERROR, DET_MULTIPLE_TIME_REPORT_ERROR, error_data, sizeof(error_data));
+            Det_Warning(DET_UDP_SENDING_ERROR, DET_MULTIPLE_TIME_REPORT_ERROR);
         }
 
         vTaskDelay(pdMS_TO_TICKS(1000));
@@ -82,6 +79,8 @@ void LedTask(void *pvParameters)
     }
 }
 
+void Can_Init(void);
+void TestInit(void);
 void App_main(void)
 {
     Lwip_Init();
@@ -91,6 +90,9 @@ void App_main(void)
     Led_Handle = xTaskCreateStatic(LedTask, "LedTask", LED_STACK_SIZE, (void *) 0, LED_TASK_PRIORITY, Led_Stack, &Led_TaskBuffer);
     Lwip_Handle = xTaskCreateStatic(Lwip_UdpTask, "LwipTask", LWIP_STACK_SIZE, (void *) 0, LWIP_TASK_PRIORITY, Lwip_Stack, &Lwip_TaskBuffer);
     // Lwip_TcpHandle = xTaskCreateStatic(Lwip_TcpIpTask, "LwipTcpTask", SERVER_STACK_SIZE, (void *) 0, SERVER_TASK_PRIORITY, Server_Stack, &Server_TaskBuffer);
+
+    Can_Init();
+    TestInit();
 
     vTaskStartScheduler();
 

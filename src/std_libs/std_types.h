@@ -9,11 +9,16 @@
 #define NULL_PTR    ((void*)0)
 
 /**********************************TYPEDEFS************************************/
-typedef enum 
-{
-    E_OK = 0U,
-    E_NOT_OK = 1U
-} Std_ReturnType;
+// typedef enum 
+// {
+//     E_OK = 0U,
+//     E_NOT_OK = 1U
+// } Std_ReturnType;
+
+#define E_OK        (0u)
+#define E_NOT_OK    (1u)
+
+typedef uint8_t Std_ReturnType;
 
 /**********************************PROTOTYPES**********************************/
 

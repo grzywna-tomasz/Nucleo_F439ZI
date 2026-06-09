@@ -8,3 +8,11 @@
         (buf)[0] = (uint8_t)((value) & 0xFF);           \
         (buf)[1] = (uint8_t)(((value) >> 8) & 0xFF);    \
     } while(0)
+
+#define StdUtils_Uint32ToBuffer(buf, value)             \
+    do {                                                \
+        (buf)[0] = (uint8_t)((value) & 0xFF);           \
+        (buf)[1] = (uint8_t)(((value) >> 8) & 0xFF);    \
+        (buf)[2] = (uint8_t)(((value) >> 16) & 0xFF);   \
+        (buf)[3] = (uint8_t)(((value) >> 24) & 0xFF);   \
+    } while(0)

@@ -1,20 +1,22 @@
-project(det)
+project(can)
 
 add_library(${PROJECT_NAME} STATIC
-    ../../ext/det/src/det.c
-    src/det_custom.c)
+    src/can.cpp)
 
 target_include_directories(${PROJECT_NAME} 
     PUBLIC
-        ../../ext/det/inc
         inc
 )
 
 target_link_options(${PROJECT_NAME} PRIVATE --remove)
 
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC
+    PRIVATE
+    freertos_kernel
+    freertos_config
     std_libs
-    app_erpc_c
-    main_app
+    det
+    stm32cubemx
 )
+
+target_compile_options(${PROJECT_NAME} PRIVATE ${OPTIMIZATION_DEBUG})

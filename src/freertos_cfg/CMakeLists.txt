@@ -41,3 +41,5 @@ target_link_libraries(${PROJECT_NAME}
     freertos_kernel
     freertos_config
 )
+
+target_compile_options(${PROJECT_NAME} PRIVATE ${OPTIMIZATION_DEBUG})

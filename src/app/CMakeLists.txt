@@ -7,6 +7,7 @@ add_library(${PROJECT_NAME} STATIC)
 target_sources(${PROJECT_NAME}
     PRIVATE
         src/app.c
+        src/test.cpp
 )
 
 target_include_directories(${PROJECT_NAME} 
@@ -25,4 +26,5 @@ target_link_libraries(${PROJECT_NAME}
     std_libs
     app_erpc_c
     det
+    can
 )

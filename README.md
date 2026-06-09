@@ -10,3 +10,5 @@ Just a example as a base for future projects.
 * ERPC as a client
 * CAN for communication with VESC
 * DET (development error tracer) - To log any issues. It should be configured as event and a list of variables to be stored.
+
+
