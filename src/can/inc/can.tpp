@@ -1,8 +1,8 @@
 #pragma once
 
 template <uint16_t TxQueueSize>
-CanDriverInstance<TxQueueSize>::CanDriverInstance(uint8_t max_listeners, CAN_HandleTypeDef& hcan)
-    : ICanDriverInstance(max_listeners, hcan, m_TxQueueStorageArea, sizeof(m_TxQueueStorageArea))
+CanDriverInstance<TxQueueSize>::CanDriverInstance(uint8_t max_listeners, CAN_HandleTypeDef& hcan, uint32_t frame_id_type)
+    : ICanDriverInstance(max_listeners, hcan, m_TxQueueStorageArea, sizeof(m_TxQueueStorageArea), frame_id_type)
 {
 }
 

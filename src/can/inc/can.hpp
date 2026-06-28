@@ -28,7 +28,7 @@ class ICanListener;
 
 class ICanDriverInstance {
 public:
-    ICanDriverInstance(uint8_t max_listeners, CAN_HandleTypeDef& hcan, uint8_t* tx_queue_storage_area, uint32_t tx_queue_size);
+    ICanDriverInstance(uint8_t max_listeners, CAN_HandleTypeDef& hcan, uint8_t* tx_queue_storage_area, uint32_t tx_queue_size, uint32_t frame_id_type);
     Std_ReturnType init();
     Std_ReturnType addListener(ICanListener *listener);
     void rxMsgDispatcher(CAN_HandleTypeDef *hcan);
@@ -46,13 +46,14 @@ private:
     uint8_t* const m_TxQueueStorageArea;
     const uint32_t m_TxQueueStorageAreaSize;
     CAN_HandleTypeDef& m_hcan;
+    const uint32_t m_frameIdType;
 };
 
 /* TxQueueSize - numer of elements that can be stored in queue */
 template <uint16_t TxQueueSize>
 class CanDriverInstance: public ICanDriverInstance {
 public:
-    CanDriverInstance(uint8_t max_listeners, CAN_HandleTypeDef& hcan);
+    CanDriverInstance(uint8_t max_listeners, CAN_HandleTypeDef& hcan, uint32_t frame_id_type = CAN_ID_STD);
 private:
     uint8_t m_TxQueueStorageArea[TxQueueSize * sizeof(CanData_t)];
 };

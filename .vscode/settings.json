@@ -31,7 +31,10 @@
         "Nucleo_F439ZI/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy",
         "Nucleo_F439ZI/Drivers/CMSIS/Include",
         "Nucleo_F439ZI/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
-        "/usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h"
+        "/usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h",
+        "src/std_libs/inc/",
+        "src/vesc/inc/",
+
     ],
     "files.exclude": {
     },

@@ -1,4 +1,5 @@
 #include "can.hpp"
+#include "vesc.h"
 
 extern "C" {
 #include "lwip.h"
@@ -20,32 +21,33 @@ void task(void *pvParams)
     CanData_t msg;
     while(1)
     {
-        CanData_t data {.id = 0x123, .data={0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88}, .data_len = 8};
+        // CanData_t data {.id = 0x123, .data={0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88}, .data_len = 8};
 
-        Test_Listener.sendMessage(data);
+        // Test_Listener.sendMessage(data);
 
-        if (E_OK == Test_Listener.waitForMsg(msg, pdMS_TO_TICKS(1000)))
-        {
-            Lwip_SendUdp(reinterpret_cast<const char*>(msg.data), msg.data_len);
-        }
-        vTaskDelay(pdMS_TO_TICKS(1000u));
+        // if (E_OK == Test_Listener.waitForMsg(msg, pdMS_TO_TICKS(1000)))
+        // if (E_OK == Test_Listener.waitForMsg(msg, portMAX_DELAY))
+        // {
+        //     Lwip_SendUdp(reinterpret_cast<const char*>(msg.data), msg.data_len);
+        // }
+        // vTaskDelay(pdMS_TO_TICKS(1000u));
 
-        uint8_t in_data = 0xFF;
-        for (uint8_t index = 0; index < 5; index++)
-        {
-            data.data[index] = in_data;
-            in_data -= 0x11;
-        }
+        // uint8_t in_data = 0xFF;
+        // for (uint8_t index = 0; index < 5; index++)
+        // {
+        //     data.data[index] = in_data;
+        //     in_data -= 0x11;
+        // }
 
-        data.data_len = 5;
+        // data.data_len = 5;
 
-        Test_Listener2.sendMessage(data);
+        // Test_Listener2.sendMessage(data);
 
-        if (E_OK == Test_Listener2.waitForMsg(msg, pdMS_TO_TICKS(1000)))
-        {
-            Lwip_SendUdp(reinterpret_cast<const char*>(msg.data), msg.data_len);
-        }
-        vTaskDelay(pdMS_TO_TICKS(1000u));
+        // if (E_OK == Test_Listener2.waitForMsg(msg, pdMS_TO_TICKS(1000)))
+        // {
+        //     Lwip_SendUdp(reinterpret_cast<const char*>(msg.data), msg.data_len);
+        // }
+        // vTaskDelay(pdMS_TO_TICKS(1000u));
     }
 }
 
@@ -53,8 +55,9 @@ volatile uint32_t test_;
 
 extern "C" void TestInit()
 {
-    Test_Listener.init(&CanDriver1);
-    Test_Listener2.init(&CanDriver2);
+    // Test_Listener.init(&CanDriver1);
+    // Test_Listener2.init(&CanDriver2);
 
-    TestTaskHandle = xTaskCreateStatic(task, "task", STACK_SIZE, (void *) 0, TASK_PRIORITY, Stack, &TaskBuffer);
+    // TestTaskHandle = xTaskCreateStatic(task, "task", STACK_SIZE, (void *) 0, TASK_PRIORITY, Stack, &TaskBuffer);
+    Vesc_Init();
 }

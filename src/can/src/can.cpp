@@ -19,7 +19,7 @@ StackType_t Can_Stack[CAN_STACK_SIZE];
 StaticTask_t Can_TaskBuffer;
 TaskHandle_t Can_TaskHandle = NULL;
 
-CanDriverInstance<5> CanDriver1 {3, hcan1};
+CanDriverInstance<5> CanDriver1 {3, hcan1, CAN_ID_EXT};
 CanDriverInstance<4> CanDriver2 {3, hcan2};
 
 uint8_t Can_GetUniqueIdOfInstance(CAN_HandleTypeDef *hcan)
@@ -102,8 +102,8 @@ extern "C" Std_ReturnType Can_Init(void)
 
 uint8_t ICanDriverInstance::m_CurrentId = 0;
 
-ICanDriverInstance::ICanDriverInstance(uint8_t max_listeners, CAN_HandleTypeDef& hcan, uint8_t* tx_queue_storage_area, uint32_t tx_queue_size)
-    :m_UniqueId {m_CurrentId++}, m_listeners(max_listeners, nullptr), m_TxQueueStorageArea {tx_queue_storage_area}, m_TxQueueStorageAreaSize {tx_queue_size}, m_hcan {hcan}
+ICanDriverInstance::ICanDriverInstance(uint8_t max_listeners, CAN_HandleTypeDef& hcan, uint8_t* tx_queue_storage_area, uint32_t tx_queue_size, uint32_t frame_id_type)
+    :m_UniqueId {m_CurrentId++}, m_listeners(max_listeners, nullptr), m_TxQueueStorageArea {tx_queue_storage_area}, m_TxQueueStorageAreaSize {tx_queue_size}, m_hcan {hcan}, m_frameIdType {frame_id_type}
 {
 }
 
@@ -172,12 +172,20 @@ void ICanDriverInstance::rxMsgDispatcher(CAN_HandleTypeDef *hcan)
         &header,
         data.data
     );
-    data.id = header.StdId;
+
+    if (CAN_ID_EXT == m_frameIdType)
+    {
+        data.id = header.ExtId;
+    }
+    else if (CAN_ID_STD == m_frameIdType)
+    {
+        data.id = header.StdId;
+    }
     data.data_len = header.DLC;
 
     for (ICanListener*& listener : m_listeners)
     {
-        if ((listener) && (listener->msgForThisListener(header.StdId)))
+        if ((listener) && (listener->msgForThisListener(data.id)))
         {
             BaseType_t ret_val = xQueueSendFromISR(listener->getCanQueueHandle(), &data, pdFALSE);
             if (pdPASS != ret_val)
@@ -208,11 +216,17 @@ void ICanDriverInstance::sendFromQueue(void)
     {
         CAN_TxHeaderTypeDef header;
         uint32_t mailbox_not_used;
-    
-        header.StdId = msg.id;
-        header.ExtId = 0x00;
+        
+        if (CAN_ID_STD == m_frameIdType)
+        {
+            header.StdId = msg.id;
+        }
+        else
+        {
+            header.ExtId = msg.id;
+        }
         header.RTR = CAN_RTR_DATA;
-        header.IDE = CAN_ID_STD;
+        header.IDE = m_frameIdType;
         header.DLC = msg.data_len;
         header.TransmitGlobalTime = DISABLE;
         HAL_CAN_AddTxMessage(&m_hcan, &header, msg.data, &mailbox_not_used);
