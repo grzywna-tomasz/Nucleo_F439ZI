@@ -6,3 +6,6 @@
 [submodule "ext/det"]
 	path = ext/det
 	url = git@github.com:grzywna-tomasz/det.git
+[submodule "ext/CanOpenSTM32"]
+	path = ext/CanOpenSTM32
+	url = https://github.com/CANopenNode/CanOpenSTM32.git

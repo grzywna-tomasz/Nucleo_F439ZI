@@ -123,4 +123,4 @@ def main(filename):
 
 if __name__ == "__main__":
     import sys
-    main("../../build/Debug/nucleo.elf")
+    main("../../build/Release/nucleo.elf")

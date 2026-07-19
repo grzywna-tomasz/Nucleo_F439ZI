@@ -1,5 +1,5 @@
 #include "can.hpp"
-#include "vesc.h"
+#include "vesc.hpp"
 
 extern "C" {
 #include "lwip.h"

@@ -11,3 +11,19 @@ void StdUtils_BufferToValueDifferenEndian(uint8_t*& pointer_modified, int16_t& v
     variable = (pointer_modified[0] << 8) | pointer_modified[1];
     pointer_modified += 2;
 }
+
+void StdUtils_ValueToBufferDifferenEndian(uint8_t*& pointer_modified, int32_t& variable)
+{
+    pointer_modified[0] = variable >> 24;
+    pointer_modified[1] = variable >> 16;
+    pointer_modified[2] = variable >> 8;
+    pointer_modified[3] = variable;
+    pointer_modified += 4;
+}
+
+void StdUtils_ValueToBufferDifferenEndian(uint8_t*& pointer_modified, int16_t& variable)
+{
+    pointer_modified[0] = variable >> 8;
+    pointer_modified[1] = variable;
+    pointer_modified += 2;
+}
