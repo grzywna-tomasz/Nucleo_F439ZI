@@ -1,7 +1,7 @@
 project(can)
 
 add_library(${PROJECT_NAME} STATIC
-    src/can.cpp)
+    src/can.c)
 
 target_include_directories(${PROJECT_NAME} 
     PUBLIC

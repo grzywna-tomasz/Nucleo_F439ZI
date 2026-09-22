@@ -28,4 +28,5 @@ target_link_libraries(${PROJECT_NAME}
     det
     can
     vesc
+    can_open
 )

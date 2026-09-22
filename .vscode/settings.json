@@ -34,7 +34,11 @@
         "/usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h",
         "src/std_libs/inc/",
         "src/vesc/inc/",
-
+        "ext/CANopenSTM32/CANopenNode_STM32",
+        "ext/CANopenSTM32/CANopenNode",
+        "ext/CANopenSTM32/CANopenNode/301",
+        "ext/CanOpenSTM32/examples/stm32f4xx_can/Drivers/STM32F4xx_HAL_Driver/inc",
+        "ext/CanOpenSTM32/examples/stm32f4xx_can/Drivers/STM32F4xx_HAL_Driver/src",
     ],
     "files.exclude": {
     },
@@ -42,6 +46,9 @@
     "C_Cpp.default.defines": [
         "DEBUG",
         "STM32F439xx",
-        "USE_HAL_DRIVER"
+        "USE_HAL_DRIVER",
+        "CO_CONFIG_SDO_CLI",
+        "CO_CONFIG_FIFO=CO_CONFIG_FIFO_ENABLE",
+        "CO_CONFIG_NMT=CO_CONFIG_NMT_MASTER"
     ]
 }

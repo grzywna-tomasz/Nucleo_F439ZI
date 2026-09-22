@@ -1,7 +1,9 @@
 #pragma once
 
 #include "std_types.h"
-#include "can.hpp"
+extern "C" {
+#include "can.h"
+}
 
 Std_ReturnType Vesc_Init(void);
 

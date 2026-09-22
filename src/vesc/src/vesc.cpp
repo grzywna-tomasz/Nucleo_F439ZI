@@ -9,12 +9,8 @@ extern "C" {
 }
 
 static constexpr uint32_t VESC_STATUS_MSG_MASK {0xFF00};
-
-/* TODO - where to put it so it will be properly? Some header */
-extern CanDriverInstance<5> CanDriver1;
-CanListener<8> Vesc_CanListener;
-Vesc Vesc_Controller1(32, 1);
-std::vector<Vesc*> controllersVector {&Vesc_Controller1};
+/* TODO - For later. Store ControllerID in eeprom. Then read the ID in the init and update the controller ID */
+Vesc Vesc_Controller_FL(32, 1);
 
 static constexpr uint32_t VESC_STACK_SIZE {256U};
 static constexpr uint32_t VESC_TASK_PRIORITY {tskIDLE_PRIORITY + 1};
@@ -123,14 +119,20 @@ Std_ReturnType VescMotorController::send4Bytes(int32_t value, uint16_t message_i
     CanData_t msg;
     msg.id = message_id + m_controllerId;
     msg.data_len = 4;
+    msg.frame_id_type = FRAME_EXTENDED;
     uint8_t *local_data_ptr = msg.data;
     StdUtils_ValueToBufferDifferenEndian(local_data_ptr, value);
-    return Vesc_CanListener.sendMessage(msg);
+    return Can_SendMessage(&msg);
 }
 
 void VescMotorController::sendPeriodic(void)
 {
     send4Bytes(m_periodicValue, m_periodicMode);
+}
+  
+void VescMotorController::updateControllerId(uint8_t controller_id)
+{
+    m_controllerId = controller_id;
 }
   
 void Vesc::decodeStatus(CanData_t& msg)
@@ -170,14 +172,14 @@ void Vesc_Task(void *pvParams)
     while(1)
     {
         CanData_t msg;
-        Vesc_CanListener.waitForMsg(msg);
-        Vesc_Controller1.decodeStatus(msg);
+        Can_WaitForMessage(&msg);
+        Vesc_Controller_FL.decodeStatus(msg);
     }
 }
 
 void Vesc_TimerCallback(TimerHandle_t xTimer)
 {
-    Vesc_Controller1.sendPeriodic();
+    Vesc_Controller_FL.sendPeriodic();
 }
 
 Std_ReturnType Vesc_Init(void)
@@ -189,7 +191,7 @@ Std_ReturnType Vesc_Init(void)
 
     if ((Vesc_TaskHandle) && (Vesc_TimerHandle))
     {
-        ret_val = Vesc_CanListener.init(&CanDriver1);
+        ret_val = E_OK;
     }
 
     return ret_val;
@@ -199,48 +201,48 @@ extern "C"
 {
 Erpc_Status_t Vesc_SetSpeed(uint32_t rpm, uint8_t controller_id)
 {
-    Vesc_Controller1.setSpeed(rpm);
+    Vesc_Controller_FL.setSpeed(rpm);
     return ERPC_OK;
 }
 
 int32_t Vesc_GetSpeedRPM(uint8_t controller_id)
 {
-    return Vesc_Controller1.getSpeed();
+    return Vesc_Controller_FL.getSpeed();
 }
 
 int16_t Vesc_GetInputCurrent(uint8_t controller_id)
 {
-    return Vesc_Controller1.getInputCurrent();
+    return Vesc_Controller_FL.getInputCurrent();
 }
 
 int16_t Vesc_GetInputVoltage(uint8_t controller_id)
 {
-    return Vesc_Controller1.getInputVoltage();
+    return Vesc_Controller_FL.getInputVoltage();
 }
 
 int16_t Vesc_GetMotorCurrent(uint8_t controller_id)
 {
-    return Vesc_Controller1.getCurrent();
+    return Vesc_Controller_FL.getCurrent();
 }
 
 int16_t Vesc_GetFETTemp(uint8_t controller_id)
 {
-    return Vesc_Controller1.getFETTemp();
+    return Vesc_Controller_FL.getFETTemp();
 }
 
 int16_t Vesc_GetMotorCurrentPositionDeg(uint8_t controller_id)
 {
-    return Vesc_Controller1.getPIDPosition() * 2 / 100;
+    return Vesc_Controller_FL.getPIDPosition() * 2 / 100;
 }
 
 int16_t Vesc_GetCurrentDutyCycle(uint8_t controller_id)
 {
-    return Vesc_Controller1.getDutyCycle();
+    return Vesc_Controller_FL.getDutyCycle();
 }
 
 Erpc_Status_t Vesc_EnableMotorFreespin(uint8_t controller_id)
 {
-    Vesc_Controller1.setCurrent(0);
+    Vesc_Controller_FL.setCurrent(0);
     return ERPC_OK;
 }
 
