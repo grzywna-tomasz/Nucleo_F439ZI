@@ -9,7 +9,7 @@ extern "C" {
 }
 
 static constexpr uint32_t VESC_STATUS_MSG_MASK {0xFF00};
-/* TODO - For later. Store ControllerID in eeprom. Then read the ID in the init and update the controller ID */
+/* TODOLater - For later. Store ControllerID in eeprom. Then read the ID in the init and update the controller ID */
 Vesc Vesc_Controller_FL(32, 1);
 
 static constexpr uint32_t VESC_STACK_SIZE {256U};
@@ -24,7 +24,7 @@ void Vesc_Status1::status1Decode(uint8_t* data, uint8_t data_len)
 {
     if ((nullptr == data) || (8 != data_len))
     {
-        /* TODO DET */
+        /* TODOLater - DET */
         return;
     }
     else
@@ -40,7 +40,7 @@ void Vesc_Status2::status2Decode(uint8_t* data, uint8_t data_len)
 {
     if ((nullptr == data) || (8 != data_len))
     {
-        /* TODO DET */
+        /* TODOLater DET */
         return;
     }
     else
@@ -55,7 +55,7 @@ void Vesc_Status3::status3Decode(uint8_t* data, uint8_t data_len)
 {
     if ((nullptr == data) || (8 != data_len))
     {
-        /* TODO DET */
+        /* TODOLater DET */
         return;
     }
     else
@@ -71,7 +71,7 @@ void Vesc_Status4::status4Decode(uint8_t* data, uint8_t data_len)
 {
     if ((nullptr == data) || (8 != data_len))
     {
-        /* TODO DET */
+        /* TODOLater DET */
         return;
     }
     else
@@ -89,7 +89,7 @@ void Vesc_Status5::status5Decode(uint8_t* data, uint8_t data_len)
 {
     if ((nullptr == data) || (8 != data_len))
     {
-        /* TODO DET */
+        /* TODOLater DET */
         return;
     }
     else
@@ -117,7 +117,7 @@ void VescMotorController::setCurrent(int32_t current)
 Std_ReturnType VescMotorController::send4Bytes(int32_t value, uint16_t message_id)
 {
     CanData_t msg;
-    msg.id = message_id + m_controllerId;
+    msg.id = message_id + m_CANId;
     msg.data_len = 4;
     msg.frame_id_type = FRAME_EXTENDED;
     uint8_t *local_data_ptr = msg.data;
@@ -128,11 +128,6 @@ Std_ReturnType VescMotorController::send4Bytes(int32_t value, uint16_t message_i
 void VescMotorController::sendPeriodic(void)
 {
     send4Bytes(m_periodicValue, m_periodicMode);
-}
-  
-void VescMotorController::updateControllerId(uint8_t controller_id)
-{
-    m_controllerId = controller_id;
 }
   
 void Vesc::decodeStatus(CanData_t& msg)
@@ -193,6 +188,8 @@ Std_ReturnType Vesc_Init(void)
     {
         ret_val = E_OK;
     }
+
+    xTimerStart(Vesc_TimerHandle, 0);
 
     return ret_val;
 }

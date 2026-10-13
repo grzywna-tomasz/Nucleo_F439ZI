@@ -57,6 +57,8 @@ MEMORY
 {
 RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 192K
 CCMRAM (xrw)      : ORIGIN = 0x10000000, LENGTH = 64K
+FLASH (rx)          : ORIGIN = 0x08000000, LENGTH = 1920K
+CONFIG_FLASH (rx)   : ORIGIN = 0x081E0000, LENGTH = 128K
 }
 
 /* Highest address of the user mode stack */
@@ -255,7 +257,12 @@ SECTIONS
     . = ALIGN(8);
   } >RAM
 
-
+  .config :
+  {
+      . = ALIGN(4);
+      KEEP(*(.config))
+      . = ALIGN(4);
+  } > CONFIG_FLASH
 
   /* Remove information from the standard libraries */
   /DISCARD/ :

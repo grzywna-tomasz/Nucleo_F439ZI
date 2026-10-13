@@ -51,7 +51,9 @@ static void CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 static void CAN_TxMailboxCompleteCallback(CAN_HandleTypeDef *hcan)
 {
     /* Trigger transmission if there are more messages in queue */
-    xTaskNotifyGive(Can_TaskHandle);
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    vTaskNotifyGiveFromISR(Can_TaskHandle, &xHigherPriorityTaskWoken);
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 void HAL_CAN_RxFifo0FullCallback(CAN_HandleTypeDef *hcan)

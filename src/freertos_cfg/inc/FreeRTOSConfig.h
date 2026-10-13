@@ -651,7 +651,7 @@
  * functions even when the constant is 1. */
 #define INCLUDE_vTaskPrioritySet               0
 #define INCLUDE_uxTaskPriorityGet              0
-#define INCLUDE_vTaskDelete                    0
+#define INCLUDE_vTaskDelete                    1
 #define INCLUDE_vTaskSuspend                   0
 #define INCLUDE_xTaskDelayUntil                0
 #define INCLUDE_vTaskDelay                     1

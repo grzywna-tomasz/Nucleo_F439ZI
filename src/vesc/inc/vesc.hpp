@@ -101,14 +101,14 @@ private:
 class VescMotorController
 {
 public:
-    VescMotorController(uint8_t controller_id)
-    : m_controllerId {controller_id}
+    VescMotorController(uint8_t can_id)
+    : m_CANId {can_id}
     {}
     void setERPM(int32_t erpm_speed);
     void setCurrent(int32_t current);
     void sendPeriodic(void);
 private:
-    uint8_t m_controllerId;
+    uint8_t m_CANId;
     Std_ReturnType send4Bytes(int32_t value, uint16_t message_id);
     uint16_t m_periodicMode {ERPM_MODE};
     uint32_t m_periodicValue;
@@ -120,8 +120,8 @@ private:
 class Vesc : public VescMotorController, public Vesc_Status1, public Vesc_Status2, public Vesc_Status3, public Vesc_Status4, public Vesc_Status5
 {
 public:
-    Vesc(uint8_t controller_id, uint8_t motor_poles)
-    : VescMotorController(controller_id), m_motorPoles {motor_poles}
+    Vesc(uint8_t can_id, uint8_t motor_poles)
+    : VescMotorController(can_id), m_motorPoles {motor_poles}
     {}
     
     void decodeStatus(CanData_t& msg);

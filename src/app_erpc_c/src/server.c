@@ -47,9 +47,28 @@ static void Server_Task(void *pvParameters)
     }
 }
 
-Erpc_Status_t Unused_TestRequest(uint8_t test_variable)
+Erpc_Status_t AssignVesc(Erpc_VescType_t vesc_type, uint8_t can_id)
 {
-    Lwip_SendUdp("Received test variable\n", sizeof("Received test variable\n"));
+    return ERPC_OK;
+}
+
+Erpc_Status_t Move_WithSpeed(uint8_t speed_percentage, Erpc_MoveType_t move_type)
+{
+    return ERPC_OK;
+}
+
+Erpc_Status_t Move_Rotate(uint8_t rotation_speed_percentage, Erpc_RotateType_t rotation_type)
+{
+    return ERPC_OK;
+}
+
+Erpc_Status_t Valve_SetInternalPressure(uint32_t psi_q15_16)
+{
+    return ERPC_OK;
+}
+
+Erpc_Status_t Led_SetLevel(uint8_t brighness)
+{
     return ERPC_OK;
 }
 

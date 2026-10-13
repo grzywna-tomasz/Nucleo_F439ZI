@@ -29,4 +29,5 @@ target_link_libraries(${PROJECT_NAME}
     can
     vesc
     can_open
+    memory
 )

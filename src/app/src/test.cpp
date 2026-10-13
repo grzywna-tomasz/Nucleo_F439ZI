@@ -1,4 +1,5 @@
 #include "vesc.hpp"
+#include "eeprom.hpp"
 
 extern "C" {
 #include "can.h"
@@ -6,6 +7,8 @@ extern "C" {
 #include "can_open.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "flash.h"
+#include "c_example_server.h"
 };
 
 static constexpr uint32_t STACK_SIZE {256U};
@@ -16,6 +19,7 @@ TaskHandle_t TestTaskHandle = NULL;
 
 
 volatile uint32_t position_value;
+volatile uint32_t test_value = false;
 
 void task(void *pvParams)
 {
@@ -54,6 +58,24 @@ void task(void *pvParams)
         
         uint8_t unused;
         CANOpen_ReadSDO(0x01, 0x6004, 0, const_cast<uint8_t *>(reinterpret_cast<volatile uint8_t *>(&position_value)), 4, &unused);
+
+
+        if (1 == test_value)
+        {
+            test_value = false;
+
+            VescDataConfig_RAM.can_id += 1;
+
+            EepromData_WriteBlock(EEPROM_VESC_BLOCK_ID);
+        }
+        else if (2 == test_value)
+        {
+            EepromData_ErasePage();
+            test_value = false;
+        }
+
+
+
         vTaskDelay(pdMS_TO_TICKS(1u));
     }
 }
@@ -68,4 +90,15 @@ extern "C" void TestInit()
     TestTaskHandle = xTaskCreateStatic(task, "task", STACK_SIZE, (void *) 0, TASK_PRIORITY, Stack, &TaskBuffer);
     Vesc_Init();
     CANOpen_Init();
+    Flash_Init();
+    EepromData_Init();
+}
+
+extern "C" Erpc_Status_t Unused_TestRequest(uint8_t test_variable)
+{
+    VescDataConfig_RAM.can_id += 1;
+
+    EepromData_WriteBlock(EEPROM_VESC_BLOCK_ID);
+
+    return ERPC_OK;
 }
