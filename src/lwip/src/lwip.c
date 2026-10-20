@@ -57,7 +57,7 @@ void Lwip_UdpTask(void *pvParameters)
 {
     while(1)
     {
-        // TODOTODO - this propably can be reworked with the interrupts
+        // TODOLater - this propably can be reworked with the interrupts
         ethernetif_input(&Lwip_NetIf);
     
         sys_check_timeouts();

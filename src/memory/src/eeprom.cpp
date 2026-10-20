@@ -6,11 +6,9 @@ extern "C" {
 #include "task.h"
 }
 
-/* TODO for Now:
+/* TODOLater:
 1. change this module to class
-2. whenever any value is updated, the CRC should be updated and flash should be written.
-3. Functionality to change multiple values at once block - with immediate update of CRC and flash
-4. Do task where all TODO are reworked for TODONow and TODOLater to indicate what need to be done immediatelly and what is just a reminder */
+2. Add CRC to blocks */
 
 /* TODOLater - This is only test purposes, in proper implementation there should be at least two pages used
 this is implement4ed for STM32F439 with 2 MB Flash with usage of FLASH_SECTOR_23. If this is modified you need to modify EEPROM_START_ADDRESS, EEPROM_PAGE_SIZE */

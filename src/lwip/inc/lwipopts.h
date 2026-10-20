@@ -105,7 +105,7 @@
 
 #define LWIP_NETIF_LINK_CALLBACK    0
 
-/* todo 
+/* TODOLater
 Create a mallock wrapper to catch all alocation failures
 monitor lwip_stats.pbuf.err lwip_stats.pbuf.drop for PBUF_POOL_SIZE too small
 monitor lwip_stats.etharp.memerr lwip_stats.etharp.drop for ARP_TABLE_SIZE too small and ARP_QUEUE_LEN too small

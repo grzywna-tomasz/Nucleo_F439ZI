@@ -28,13 +28,13 @@ Std_ReturnType CANOpen_ReadSDO(uint8_t nodeId, uint16_t index, uint8_t subIndex,
         return E_NOT_OK;
     }
 
-    /* TODO check and rework the delay */
+    /* TODOLater check and rework the delay */
     if (CO_SDO_RT_ok_communicationEnd != CO_SDOclientUploadInitiate(CO->SDOclient, index, subIndex, 1000, false))
     {
         return E_NOT_OK;
     }
 
-    /* TODO rework this to have a timeout and simplify the logic. Check the timeDifference_us */
+    /* TODOLater rework this to have a timeout and simplify the logic. Check the timeDifference_us */
     CO_SDO_return_t communication_code;
     do 
     {
@@ -47,11 +47,11 @@ Std_ReturnType CANOpen_ReadSDO(uint8_t nodeId, uint16_t index, uint8_t subIndex,
             return E_NOT_OK;
         }
 
-        /* TODO Verify this delay - maybe use some notification to handle this */
+        /* TODOLater Verify this delay - maybe use some notification to handle this */
         vTaskDelay(pdMS_TO_TICKS(1));
     } while(communication_code > 0);
 
-    /* TODO do it if needed */
+    /* TODOLater do it if needed */
     // copy data to the user buffer (for long data function must be called
     // several times inside the loop)
     *readSize = CO_SDOclientUploadBufRead(CO->SDOclient, buf, bufSize);
@@ -68,7 +68,7 @@ Std_ReturnType CANOpen_WriteSDO(uint8_t nodeId, uint16_t index, uint8_t subIndex
         return E_NOT_OK;
     }
 
-    /* TODO check and rework the delay */
+    /* TODOLater check and rework the delay */
     if (CO_SDO_RT_ok_communicationEnd != CO_SDOclientDownloadInitiate(CO->SDOclient, index, subIndex, dataSize, 1000, false))
     {
         return E_NOT_OK;
@@ -78,10 +78,10 @@ Std_ReturnType CANOpen_WriteSDO(uint8_t nodeId, uint16_t index, uint8_t subIndex
     if (nWritten < dataSize) 
     {
         bufferPartial = true;
-        // TODO - fix this if needed If SDO Fifo buffer is too small, data can be refilled in the loop.
+        // TODOLater - fix this if needed If SDO Fifo buffer is too small, data can be refilled in the loop.
     }
 
-    /* TODO rework this to have a timeout and simplify the logic. Check the timeDifference_us */
+    /* TODOLater rework this to have a timeout and simplify the logic. Check the timeDifference_us */
     CO_SDO_return_t communication_code;
     do 
     {
@@ -94,7 +94,7 @@ Std_ReturnType CANOpen_WriteSDO(uint8_t nodeId, uint16_t index, uint8_t subIndex
             return E_NOT_OK;
         }
 
-        /* TODO Verify this delay - maybe use some notification to handle this */
+        /* TODOLater Verify this delay - maybe use some notification to handle this */
         vTaskDelay(pdMS_TO_TICKS(1));
     } while(communication_code > 0);
 
@@ -141,7 +141,7 @@ static void CANopen_Task(void * pvParameters)
     // HAL_NVIC_EnableIRQ(CAN1_TX_IRQn);
     // HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
     
-    /* TODO do it smarter. This should get all available nodes */
+    /* TODOLater do it smarter. This should get all available nodes */
     /* wait for all nodes to become alive */
     vTaskDelay(pdMS_TO_TICKS(2000));
     uint8_t temp_node = 0x01;
@@ -155,22 +155,22 @@ static void CANopen_Task(void * pvParameters)
 
     for(;;)
     {
-        canopen_app_process(); // todo Propably could be removed with server
-        // CO_SDOclient_process(&pCO->SDOclient[0], 1000, NULL); TODO check if this is needed for anything
+        canopen_app_process(); // TODOLater Propably could be removed with server
+        // CO_SDOclient_process(&pCO->SDOclient[0], 1000, NULL); TODOLater check if this is needed for anything
 
-        /* todo just to let other tasks work. can be removed in future with task notification */
+        /* TODOLater just to let other tasks work. can be removed in future with task notification */
         vTaskDelay(pdMS_TO_TICKS(1));
     }
 }
 
 static void CANopen_Error(void)
 {
-    /* TODO - add DET instead of while */
+    /* TODOLater - add DET instead of while */
     volatile uint8_t dummy_wait = 1;
     while(dummy_wait);
 }
 
-/* TODO - remove it or change it */
+/* TODOLater - remove it or change it */
 void CANopen_process(TIM_HandleTypeDef *htim)
 {
     if (htim == canopenNodeSTM32->timerHandle) {
@@ -178,7 +178,7 @@ void CANopen_process(TIM_HandleTypeDef *htim)
   }
 }
 
-/* TODO - do it better */
+/* TODOLater - do it better */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance == TIM4)
