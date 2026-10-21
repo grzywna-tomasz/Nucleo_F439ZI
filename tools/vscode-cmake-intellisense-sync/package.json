@@ -1,0 +1,65 @@
+{
+  "name": "cmake-intellisense-sync",
+  "displayName": "CMake IntelliSense Sync",
+  "description": "Synchronize C/C++ IntelliSense settings from a CMake compilation database.",
+  "version": "0.1.0",
+  "publisher": "local",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "extensionDependencies": [
+    "ms-vscode.cpptools"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:cmakeIntelliSenseSync.syncNow",
+    "onCommand:cmakeIntelliSenseSync.selectCompileDatabase",
+    "onTaskType:cmake-intellisense-sync"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "cmakeIntelliSenseSync.syncNow",
+        "title": "CMake IntelliSense: Sync From Build Directory"
+      },
+      {
+        "command": "cmakeIntelliSenseSync.selectCompileDatabase",
+        "title": "CMake IntelliSense: Select Compile Database"
+      }
+    ],
+    "taskDefinitions": [
+      {
+        "type": "cmake-intellisense-sync",
+        "required": [
+          "type"
+        ],
+        "properties": {}
+      }
+    ],
+    "configuration": {
+      "title": "CMake IntelliSense Sync",
+      "properties": {
+        "cmakeIntelliSenseSync.buildDirectory": {
+          "type": "string",
+          "default": "${workspaceFolder}/build",
+          "description": "Directory to search recursively for CMake compile_commands.json files."
+        },
+        "cmakeIntelliSenseSync.compileCommands": {
+          "type": "string",
+          "default": "",
+          "description": "Optional pinned compile_commands.json path. Leave empty to follow the most recently updated database under the build directory."
+        }
+      }
+    }
+    }
+}

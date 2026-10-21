@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Update C/C++ IntelliSense settings",
+            "type": "shell",
+            "command": "node",
+            "args": [
+                "${workspaceFolder}/tools/vscode-cmake-intellisense-sync/sync-settings.js"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
